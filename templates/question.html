@@ -2,6 +2,7 @@
 
 {%block content%}
 <form action="/answer" method="POST">
+    <h3>Question {{q_number + 1}}:</h3>
     <h3>{{question.question}}</h3>
     <div>
     {%for choice in question.choices%}

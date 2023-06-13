@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, flash
+from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 from surveys import satisfaction_survey
 
@@ -6,13 +6,22 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "My super secret key" 
 
 debug = DebugToolbarExtension(app)
-responses = []
+#responses = []
 questions_answered_count = 0
+
 @app.route("/")
 def show_homepage():
     '''Displays homepage where user starts the survey'''
     return render_template("base.html", title=satisfaction_survey.title,
     instructions=satisfaction_survey.instructions)
+
+@app.route("/start", methods=["POST"])
+def start_survey():
+    '''Called when user presses "start" button on survey. Initializes responses variable to 
+    empty list. '''
+    session["responses"] = []
+    return redirect("/questions/0")
+
 
 @app.route("/questions/<int:q_number>")
 def show_question(q_number):
@@ -33,7 +42,9 @@ def handle_answer():
     global questions_answered_count
     questions_answered_count += 1
     answer = request.form["options"]
+    responses = session["responses"]
     responses.append(answer)
+    session["responses"] = responses
     print(answer)
     return redirect(f"/questions/{questions_answered_count}")
 
