@@ -6,12 +6,11 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "My super secret key" 
 
 debug = DebugToolbarExtension(app)
-#responses = []
 questions_answered_count = 0
 
 @app.route("/")
 def show_homepage():
-    '''Displays homepage where user starts the survey'''
+    '''Displays homepage where user can start the survey'''
     return render_template("base.html", title=satisfaction_survey.title,
     instructions=satisfaction_survey.instructions)
 
@@ -45,7 +44,7 @@ def handle_answer():
     responses = session["responses"]
     responses.append(answer)
     session["responses"] = responses
-    print(answer)
+
     return redirect(f"/questions/{questions_answered_count}")
 
 @app.route("/thanks")
